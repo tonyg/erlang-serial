@@ -1,0 +1,9 @@
+{name, "serial"}.
+{vsn, {1,0}}.
+{summary, "Serial driver for UNIX."}.
+{author, "Johan Bevemyr", "jb@bluetail.com", "991118"}.
+{keywords, ["serial"]}.
+{needs, []}.
+{abstract,"This is a port program with erlang driver for serial communication."}.
+
+

@@ -22,11 +22,24 @@ OBJECT_FILES = $(SOURCE_FILES:.c=.o)
 
 ######################################################################
 
+ERL_FILES = $(wildcard *.erl)
+BEAM_FILES = $(patsubst %.erl, ../ebin/%.beam, $(ERL_FILES))
+
+######################################################################
+
+all: ../priv/bin/serial $(BEAM_FILES)
+
+../ebin/%.beam: %.erl
+	erlc -o ../ebin $<
+
+../priv/bin/serial: serial
+	cp serial ../priv/bin
+
 serial : $(OBJECT_FILES)
 	$(LINK.c) -o $@ $(LDFLAGS) $(OBJECT_FILES) $(LDLIBS)
 
 clean : 
-	/bin/rm -f $(OBJECT_FILES)
+	/bin/rm -f serial ../priv/bin/serial $(OBJECT_FILES) $(BEAM_FILES)
 
 # roland
 serial.o: serial.c serial.h

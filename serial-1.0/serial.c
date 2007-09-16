@@ -351,11 +351,7 @@ main(int argc, char *argv[])
   speed_t        out_speed=B9600;      /* default out speed        */
   char           ttyname[MAXPATHLEN];  /* terminal name            */
 
-#ifdef __FreeBSD__		/* roland */
-  strcpy(ttyname,"/dev/cuaa1");
-#else
-  strcpy(ttyname,"/dev/ttya");
-#endif
+  strcpy(ttyname,"/dev/ttyS0");
 
   /****************************************
    * Process command line arguments

@@ -46,6 +46,8 @@
  *                  460800
  */
 
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <termios.h>
 #include <fcntl.h>

@@ -155,7 +155,7 @@ gs_loop(Serial) ->
 	    Serial ! {connect};
 	{gs,open,click,_Data,_Opts} ->
 	    Serial ! {open,?DEVICE};
-	{gs,Exit,click,Data,Args} ->
+	{gs,exit,click,_Data,_Args} ->
 	    Serial ! stop,
 	    exit(normal);
 	{gs,_ObjectId,destroy,[],[]} ->

@@ -11,6 +11,14 @@
 
 -include("serial.hrl").
 
+priv_dir() ->
+    case code:priv_dir(serial) of
+	{error, bad_name} ->
+	    "./priv";
+	D ->
+	    D
+    end.
+
 start() ->
     start([]).
 
@@ -26,7 +34,7 @@ process_options(Pid,[Opt|Opts]) ->
 
 init(Pid) ->
     process_flag(trap_exit,true),
-    Port = open_port({spawn,"./serial -erlang"},[binary,{packet,2}]),
+    Port = open_port({spawn,priv_dir()++"/bin/serial -erlang"},[binary,{packet,2}]),
     loop(Pid,Port).
 
 loop(Pid,Port) ->

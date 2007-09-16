@@ -9,9 +9,11 @@
 -export([start/1, gs_start/1, gs_init/1]).
 -export([tty_listner/1]).
 
+-define(DEVICE, "/dev/ttyp6").
+
 start(Speed) ->
-    SerialPort = serial:start([{speed,Speed}]), % roland
-%   SerialPort = serial:start([{speed,Speed},{open,"/dev/ttya"}]),
+%    SerialPort = serial:start([{speed,Speed}]), % roland
+    SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
     spawn_link(terminal,tty_listner,[SerialPort]),
     serial_listner().
 
@@ -24,7 +26,7 @@ serial_listner() ->
     end.
 
 tty_listner(SerialPort)  ->
-    Char = io:get_line(''),
+    Char = io:get_line('Terminal> '),
     NewChar = replace(Char,10,13),
     SerialPort ! {send, NewChar},
     tty_listner(SerialPort).
@@ -101,12 +103,12 @@ gs_init(Speed) ->
     gs:create(menuitem,speed,Spmnu,[{label,{text,"38400"}}]),
     gs:create(menuitem,speed,Spmnu,[{label,{text,"57600"}}]),
     SerialPort = serial:start([{speed,Speed}]), % roland
-%   SerialPort = serial:start([{speed,Speed},{open,"/dev/ttya"}]),
+%   SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
     gs:create(menuitem,break,Smnu,[{label,{text,"Send break"}}]),
     gs:create(menuitem,hangup,Smnu,[{label,{text,"Hang up"}}]),
     gs:create(menuitem,disconnect,Smnu,[{label,{text,"Disconnect"}}]),
     gs:create(menuitem,connect,Smnu,[{label,{text,"Connect"}}]),
-    gs:create(menuitem,open,Smnu,[{label,{text,"Open /dev/ttya"}}]),
+    gs:create(menuitem,open,Smnu,[{label,{text,"Open "++?DEVICE}}]),
     gs_loop(SerialPort).
 
 gs_loop(Serial) ->
@@ -135,7 +137,9 @@ gs_loop(Serial) ->
 		X ->
 		    case Keysym of
 			'Return' ->
-			    Serial ! {send, [13]}
+			    Serial ! {send, [13]};
+			OtherKeysym ->
+			    io:format("OtherKeysym:~w~n", [OtherKeysym])
 		    end
 	    end;
 	{gs,speed,click,Data,[NewSpeed,Nr]} ->
@@ -150,7 +154,7 @@ gs_loop(Serial) ->
 	{gs,connect,click,Data,Opts} ->
 	    Serial ! {connect};
 	{gs,open,click,Data,Opts} ->
-	    Serial ! {open,"/dev/ttya"};
+	    Serial ! {open,?DEVICE};
 	{gs,Exit,click,Data,Args} ->
 	    Serial ! stop,
 	    exit(normal);

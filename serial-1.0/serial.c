@@ -42,8 +42,7 @@
  *                  300     600     1200
  *                  1800    2400    4800
  *                  9600    19200   38400
- *                  57600   76800   115200
- *                  153600  230400  307200
+ *                  57600   115200  230400
  *                  460800
  */
 
@@ -79,14 +78,9 @@ bit_rate bitrate_table[MAXSPEED] = {
   {19200  , B19200 },	
   {38400  , B38400 },	
   {57600  , B57600 },	
-  {76800  , B76800 },	
   {115200 , B115200 }, 	
-#ifndef __FreeBSD__		/* roland */
-  {153600 , B153600 }, 	
-#endif
   {230400 , B230400 }, 	
 #ifndef __FreeBSD__		/* roland */
-  {307200 , B307200 }, 	
   {460800 , B460800 } 	
 #endif
 };
@@ -686,8 +680,8 @@ main(int argc, char *argv[])
   fprintf(stderr,"134\t150\t200\n\t\t300\t");
   fprintf(stderr,"600\t1200\n\t\t1800\t2400\t4800\n\t\t");
   fprintf(stderr,"9600\t19200\t38400\n\t\t57600\t");
-  fprintf(stderr,"76800\t115200\n\t\t153600\t230400\t");
-  fprintf(stderr,"307200\n\t\t460800\n");
+  fprintf(stderr,"115200\t230400\n");
+  fprintf(stderr,"\t\t460800\n");
 
   exit(0);
 }

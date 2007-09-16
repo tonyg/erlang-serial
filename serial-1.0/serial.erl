@@ -27,7 +27,7 @@ start(Options) ->
     process_options(Pid,Options),
     Pid.
 
-process_options(Pid,[]) -> done;
+process_options(_Pid,[]) -> done;
 process_options(Pid,[Opt|Opts]) ->
     Pid ! Opt,
     process_options(Pid,Opts).

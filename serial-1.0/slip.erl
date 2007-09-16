@@ -58,7 +58,7 @@ loop(Dest,Who,Serial) ->
 	    case length(UnEscPacket) of
 		0 ->
 		    loop(Dest,Who,Serial);
-		NonZero ->
+		_NonZero ->
 		    Who ! {ip,UnEscPacket},
 		    loop(Dest,Who,Serial)
 	    end;
@@ -78,7 +78,7 @@ slip_pack_acc([X|Xs],Acc) ->
 	    slip_pack_acc(Xs,[?ESCEND,?ESC|Acc]);
 	?ESC ->
 	    slip_pack_acc(Xs,[?ESCESC,?ESC|Acc]);
-	Other ->
+	_Other ->
 	    slip_pack_acc(Xs,[X|Acc])
     end.
 
@@ -94,7 +94,7 @@ slip_unpack_acc([X|Xs],Acc) ->
 	    slip_unpack_esc_acc(Xs,Acc);
 	?END ->
 	    io:format('slip unpacking: premature end of packet~n',[]);
-	Other ->
+	_Other ->
 	    slip_unpack_acc(Xs,[X|Acc])
     end.
 

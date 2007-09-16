@@ -31,7 +31,7 @@ tty_listner(SerialPort)  ->
     SerialPort ! {send, NewChar},
     tty_listner(SerialPort).
 
-replace([],X,Y) -> [];
+replace([],_X,_Y) -> [];
 replace([H|T],H,Y) ->
     [Y|replace(T,H,Y)];
 replace([H|T],X,Y) ->
@@ -123,7 +123,7 @@ gs_loop(Serial) ->
 	    TextSize = gs:read(editor,size),
     	    gs:config(editor,[{vscrollpos,TextSize}]);
 	
-	{gs,ObjectId,keypress,Data,[Keysym,KeyCode,Shift,Control]} ->
+	{gs,_ObjectId,keypress,_Data,[Keysym,KeyCode,_Shift,Control]} ->
 	    case KeyCode of
 		X when X > 32, X < 97 ->
 		    case Control of
@@ -134,7 +134,7 @@ gs_loop(Serial) ->
 		    end;
 		X when X < 200 ->
 		    Serial ! {send, [KeyCode]};
-		X ->
+		_X ->
 		    case Keysym of
 			'Return' ->
 			    Serial ! {send, [13]};
@@ -142,23 +142,23 @@ gs_loop(Serial) ->
 			    io:format("OtherKeysym:~w~n", [OtherKeysym])
 		    end
 	    end;
-	{gs,speed,click,Data,[NewSpeed,Nr]} ->
+	{gs,speed,click,_Data,[NewSpeed,_Nr]} ->
 	    Serial ! {speed,list_to_integer(NewSpeed)};
-	{gs,break,click,Data,Opts} ->
+	{gs,break,click,_Data,_Opts} ->
 	    Serial ! {break};
-	{gs,hangup,click,Data,Opts} ->
+	{gs,hangup,click,_Data,_Opts} ->
 	    Serial ! {disconnect},
 	    Serial ! {connect};
-	{gs,disconnect,click,Data,Opts} ->
+	{gs,disconnect,click,_Data,_Opts} ->
 	    Serial ! {disconnect};
-	{gs,connect,click,Data,Opts} ->
+	{gs,connect,click,_Data,_Opts} ->
 	    Serial ! {connect};
-	{gs,open,click,Data,Opts} ->
+	{gs,open,click,_Data,_Opts} ->
 	    Serial ! {open,?DEVICE};
 	{gs,Exit,click,Data,Args} ->
 	    Serial ! stop,
 	    exit(normal);
-	{gs,ObjectId,destroy,[],[]} ->
+	{gs,_ObjectId,destroy,[],[]} ->
 	    Serial ! stop,
 	    exit(normal);
         Other ->

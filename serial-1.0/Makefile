@@ -3,10 +3,6 @@
 #  Created:	 Fri Oct 18 09:59:34 1996
  
 
-CC = gcc
-# roland
-LINK.c = gcc
-
 WARNING_OPTIONS =
 LANGUAGE_OPTIONS = 
 COMPILER_OPTIONS = -g 
@@ -36,7 +32,7 @@ all: ../priv/bin/serial $(BEAM_FILES)
 	cp serial ../priv/bin
 
 serial : $(OBJECT_FILES)
-	$(LINK.c) -o $@ $(LDFLAGS) $(OBJECT_FILES) $(LDLIBS)
+	$(CC) -o $@ $(LDFLAGS) $(OBJECT_FILES) $(LDLIBS)
 
 clean : 
 	/bin/rm -f serial ../priv/bin/serial $(OBJECT_FILES) $(BEAM_FILES)

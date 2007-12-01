@@ -35,7 +35,7 @@
  *   BREAK
  *        Sends break.
  *   
- *   usage: serial [-cbreak] [-erlang] [-speed <bit rate>] [-tty <dev>]
+ *   usage: serial [-debug] [-cbreak] [-erlang] [-speed <bit rate>] [-tty <dev>]
  *          bit rate is one of 
  *                  50      75      110
  *                  134     150     200
@@ -337,6 +337,8 @@ void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
 
 /**********************************************************************/
 
+int Debug_Enabled = FALSE;
+
 main(int argc, char *argv[])
 {
   int            ttyfd = -1;           /* terminal file descriptor */
@@ -362,6 +364,10 @@ main(int argc, char *argv[])
 	if (strcmp(argv[i],"-cbreak") == 0)         /* -cbreak */
 	  {
 	    cbreak = TRUE;
+	  }
+	else if (strcmp(argv[i],"-debug") == 0)         /* -debug */
+	  {
+	    Debug_Enabled = TRUE;
 	  }
 	else if (strcmp(argv[i],"-speed") == 0)     /* -speed  */
 	  {

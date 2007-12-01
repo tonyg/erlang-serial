@@ -49,14 +49,10 @@ typedef enum {
   BREAK=8
 } command;
 
-#ifdef DEBUG
-# define Debug(STRING)            fprintf(stderr,STRING)
-# define Debug1(STRING,Arg)       fprintf(stderr,STRING,Arg)
-# define Debug2(STRING,Arg1,Arg2) fprintf(stderr,STRING,Arg1,Arg2)
-#else
-# define Debug(STRING)            
-# define Debug1(STRING,Arg)       
-# define Debug2(STRING,Arg1,Arg2) 
-#endif
+extern int Debug_Enabled;
+
+#define Debug(STRING)            do { if (Debug_Enabled) { fprintf(stderr,STRING); } } while(0)
+#define Debug1(STRING,Arg)       do { if (Debug_Enabled) { fprintf(stderr,STRING,Arg); } } while(0)
+#define Debug2(STRING,Arg1,Arg2) do { if (Debug_Enabled) { fprintf(stderr,STRING,Arg1,Arg2); } } while(0)
 
 #endif /* SERIAL_H */

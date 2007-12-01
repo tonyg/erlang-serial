@@ -198,6 +198,7 @@ void set_tty_speed(int fd, speed_t new_ispeed, speed_t new_ospeed)
       exit(1);
     }
 
+  ttymodes.c_cflag |= CRTSCTS;     /* enable RTS/CTS flow control */
 
   /* Apply hanges */
 

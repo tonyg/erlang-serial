@@ -37,10 +37,17 @@ install: all
 	install -m 755 priv/bin/* $(FULL_INSTALL_DIR)/priv/bin
 	install -m 644 src/* $(FULL_INSTALL_DIR)/src
 
-ebin/%.beam: src/%.erl
+ebin/%.beam: src/%.erl ebin
 	erlc -o ebin $<
 
-priv/bin/serial: $(OBJECT_FILES)
+ebin:
+	mkdir -p ebin
+
+priv/bin:
+	mkdir -p priv/bin
+
+priv/bin/serial: $(OBJECT_FILES) priv/bin
+	mkdir -p priv/bin
 	$(CC) -o $@ $(LDFLAGS) $(OBJECT_FILES) $(LDLIBS)
 
 clean:

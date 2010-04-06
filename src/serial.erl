@@ -14,7 +14,11 @@
 priv_dir() ->
     case code:priv_dir(serial) of
 	{error, bad_name} ->
-	    "./priv";
+        filename:join([
+            filename:dirname(code:which(?MODULE)),
+            "..",
+            "priv"
+        ]);
 	D ->
 	    D
     end.

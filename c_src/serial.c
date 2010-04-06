@@ -635,6 +635,7 @@ main(int argc, char *argv[])
 
 		    set_raw_tty_mode(ttyfd);
 		    set_tty_speed(ttyfd,in_speed,out_speed);
+		    set_tty_flow(ttyfd, FALSE);
 		    break;
 
 		  case CLOSE:	   /******************************/

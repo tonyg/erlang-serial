@@ -154,7 +154,7 @@ void set_raw_tty_mode(int fd)
 
   ttymodes.c_oflag &= ~OPOST;      /* disable output processing */
 
-  /* roland /
+  /* roland */
   ttymodes.c_cflag |= CLOCAL;
 
 
@@ -200,7 +200,7 @@ void set_tty_speed(int fd, speed_t new_ispeed, speed_t new_ospeed)
 
   ttymodes.c_cflag |= CRTSCTS;     /* enable RTS/CTS flow control */
 
-  /* Apply hanges */
+  /* Apply changes */
 
   if (tcsetattr(fd, TCSAFLUSH, &ttymodes) < 0)
     {

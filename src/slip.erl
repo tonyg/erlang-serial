@@ -43,7 +43,7 @@ start(IPAddress) when atom(IPAddress) ->
     end.
 
 init(Dest,Who) ->
-    Serial = serial:start([{speed,38400},{open,"/dev/ttya"}]),
+    Serial = serial:start([{speed,38400},{flow},{open,"/dev/ttya"}]),
     loop(Dest,Who,Serial).
 
 loop(Dest,Who,Serial) ->

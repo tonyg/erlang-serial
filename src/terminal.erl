@@ -13,7 +13,7 @@
 
 start(Speed) ->
 %    SerialPort = serial:start([{speed,Speed}]), % roland
-    SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
+    SerialPort = serial:start([{speed,Speed},{flow},{open,?DEVICE}]),
     spawn_link(terminal,tty_listner,[SerialPort]),
     serial_listner().
 

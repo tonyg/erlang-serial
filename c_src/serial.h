@@ -46,7 +46,8 @@ typedef enum {
   SPEED=5,
   PARITY_ODD=6,
   PARITY_EVEN=7,
-  BREAK=8
+  BREAK=8,
+  FLOW=9
 } command;
 
 extern int Debug_Enabled;

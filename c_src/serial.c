@@ -198,7 +198,36 @@ void set_tty_speed(int fd, speed_t new_ispeed, speed_t new_ospeed)
       exit(1);
     }
 
-  ttymodes.c_cflag |= CRTSCTS;     /* enable RTS/CTS flow control */
+  /* Apply changes */
+
+  if (tcsetattr(fd, TCSAFLUSH, &ttymodes) < 0)
+    {
+      perror("tcsetattr");
+      exit(1);
+    }
+}
+
+/**********************************************************************
+ * Name: set_tty_flow
+ *
+ * Desc: enable/disable hardware flow control
+ */
+void set_tty_flow(int fd, boolean enable)
+{
+  struct termios ttymodes;
+
+  /* Get ttymodes */
+
+  if (tcgetattr(fd,&ttymodes) < 0) 
+    {
+      perror("tcgetattr");
+      exit(1);
+    }
+
+  if (enable)
+    ttymodes.c_cflag |= CRTSCTS;     /* enable RTS/CTS flow control */
+  else
+    ttymodes.c_cflag &= ~CRTSCTS;
 
   /* Apply changes */
 
@@ -346,6 +375,7 @@ main(int argc, char *argv[])
   int            stdoutfd;             /* user out file descriptor */
   boolean        cbreak=FALSE;         /* cbreak flag              */
   boolean        erlang=FALSE;         /* talking to erlang flag   */
+  boolean        crtscts=FALSE;        /* hardware flow control    */
   speed_t        in_speed=B9600;       /* default in speed         */
   speed_t        out_speed=B9600;      /* default out speed        */
   char           ttyname[MAXPATHLEN];  /* terminal name            */
@@ -648,6 +678,11 @@ main(int argc, char *argv[])
 		  case BREAK:      /******************************/
 		    if (TtyOpen(ttyfd))
 		      (void) tcsendbreak(ttyfd,BREAKPERIOD);
+		    break;
+
+		  case FLOW:    /******************************/
+		    if (TtyOpen(ttyfd))
+			  set_tty_flow(ttyfd, TRUE);
 		    break;
 
 		  default:

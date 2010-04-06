@@ -74,6 +74,9 @@ loop(Pid,Port) ->
 	{break} ->
 	    send_serial(Port,[?BREAK]),
 	    serial:loop(Pid,Port);
+	{flow} ->
+	    send_serial(Port,[?FLOW]),
+	    serial:loop(Pid,Port);
 	stop ->
 	    stopped;
 	{'EXIT', Port, Why} ->

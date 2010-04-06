@@ -30,10 +30,10 @@
 
 -export([start/1,init/2]).
 
-start(IPAddress) when list(IPAddress), length(IPAddress) == 4 ->
+start(IPAddress) when is_list(IPAddress), length(IPAddress) == 4 ->
     spawn_link(slip,init,[IPAddress,self()]);
 
-start(IPAddress) when atom(IPAddress) ->
+start(IPAddress) when is_atom(IPAddress) ->
     xk:start(),
     case xk:host2ip(IPAddress) of
 	{ok,IpDst} ->

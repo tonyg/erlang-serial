@@ -654,7 +654,9 @@ main(int argc, char *argv[])
 		      out_speed = get_speed(atoi(&buf[off]));
 
 		      Debug1("     raw SPEED %s\r\n",&buf[HEADERSIZE]);
-		      Debug2("received SPEED %d %d\r\n",in_speed,out_speed);
+		      Debug2("received SPEED %ud %ud\r\n",
+			     (unsigned int) in_speed,
+			     (unsigned int) out_speed);
 
 		      if(TtyOpen(ttyfd))
 			set_tty_speed(ttyfd, in_speed, out_speed);

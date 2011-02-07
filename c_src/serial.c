@@ -1,3 +1,25 @@
+/*
+Copyright (c) 1996, 1999 Johan Bevemyr
+Copyright (c) 2007, 2009 Tony Garnock-Jones
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
 /*    -*- C -*- 
  *    File:	 serial.c  (~jb/serialport/serial.c)
  *    Author:	 Johan Bevemyr
@@ -243,7 +265,7 @@ void set_tty_flow(int fd, boolean enable)
  * Desc: returns the size of a two_byte_header message (from Erlang).
  */
 
-int get_tbh_size(char buf[])
+int get_tbh_size(unsigned char buf[])
 {
   return (((int) buf[0]) << 8) + ((int) buf[1]);
 }
@@ -253,10 +275,10 @@ int get_tbh_size(char buf[])
  * Desc: sets the first two bytes of the buffer to its size
  */
 
-void set_tbh_size(char buf[], int size)
+void set_tbh_size(unsigned char buf[], int size)
 {
-  buf[1] = (char) (size & 0xff);
-  buf[0] = (char) ((size >> 8) & 0xff);
+  buf[1] = (unsigned char) (size & 0xff);
+  buf[0] = (unsigned char) ((size >> 8) & 0xff);
   return;
 }
 
@@ -266,7 +288,7 @@ void set_tbh_size(char buf[], int size)
  *       at the beginning.
  */
 
-void tbh_write(int fd, char buf[], int buffsize)
+void tbh_write(int fd, unsigned char buf[], int buffsize)
 {
   char header_buf[TBHSIZE];
 
@@ -290,7 +312,7 @@ void tbh_write(int fd, char buf[], int buffsize)
  *
  */
 
-int tbh_read(int fd, char buf[], int buffsize)
+int tbh_read(int fd, unsigned char buf[], int buffsize)
 {
   int remaining, msgsize;
 
@@ -317,7 +339,7 @@ int tbh_read(int fd, char buf[], int buffsize)
  * Returns: The number of bytes read, or 0 if stream closed.
  */
 
-int read_at_least(int fd, char buf[], int nr)
+int read_at_least(int fd, unsigned char buf[], int nr)
 {
   int remaining = nr;
   int nr_read = 0;
@@ -346,7 +368,7 @@ int read_at_least(int fd, char buf[], int nr)
  */
 
 void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
-		  char buf[], int buffmaxsize)
+		  unsigned char buf[], int buffmaxsize)
 {
   write(ttyfd,buf,buffsize);
   totalsize -= buffsize;
@@ -471,7 +493,7 @@ main(int argc, char *argv[])
   {
     fd_set readfds;           /* file descriptor bit field for select */
     int    maxfd;             /* max file descriptor for select */
-    char   buf[MAXLENGTH];    /* buffer for transfer between serial-user */
+    unsigned char buf[MAXLENGTH];    /* buffer for transfer between serial-user */
     int    escapes;           /* number of consecutive escapes in cbreak */
 
     /* Set up initial bit field for select */
@@ -613,7 +635,7 @@ main(int argc, char *argv[])
 		  case OPEN:	   /******************************/
 		    Debug("received OPEN ");
 		    /* Terminate string */
-		    buf[nr_read] = (char) 0;
+		    buf[nr_read] = '\0';
 		    strcpy(ttyname,&buf[HEADERSIZE]);
 
 		  open:
@@ -653,7 +675,7 @@ main(int argc, char *argv[])
 		      in_speed = get_speed(atoi(&buf[HEADERSIZE]));
 
 		      /* Null-terminate string */
-		      buf[nr_read] = (char) 0;
+		      buf[nr_read] = '\0';
 
 		      /* Find start of second speed */
 		      for(off=HEADERSIZE ;
@@ -663,7 +685,9 @@ main(int argc, char *argv[])
 		      out_speed = get_speed(atoi(&buf[off]));
 
 		      Debug1("     raw SPEED %s\r\n",&buf[HEADERSIZE]);
-		      Debug2("received SPEED %d %d\r\n",in_speed,out_speed);
+		      Debug2("received SPEED %ud %ud\r\n",
+			     (unsigned int) in_speed,
+			     (unsigned int) out_speed);
 
 		      if(TtyOpen(ttyfd))
 			set_tty_speed(ttyfd, in_speed, out_speed);

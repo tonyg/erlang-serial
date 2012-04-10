@@ -34,7 +34,7 @@
 
 start(Speed) ->
 %    SerialPort = serial:start([{speed,Speed}]), % roland
-    SerialPort = serial:start([{speed,Speed},{open,?DEVICE}]),
+    SerialPort = serial:start([{speed,Speed},flow,{open,?DEVICE}]),
     spawn_link(terminal,tty_listner,[SerialPort]),
     serial_listner().
 
@@ -166,14 +166,14 @@ gs_loop(Serial) ->
 	{gs,speed,click,_Data,[NewSpeed,_Nr]} ->
 	    Serial ! {speed,list_to_integer(NewSpeed)};
 	{gs,break,click,_Data,_Opts} ->
-	    Serial ! {break};
+	    Serial ! break;
 	{gs,hangup,click,_Data,_Opts} ->
-	    Serial ! {disconnect},
-	    Serial ! {connect};
+	    Serial ! disconnect,
+	    Serial ! connect;
 	{gs,disconnect,click,_Data,_Opts} ->
-	    Serial ! {disconnect};
+	    Serial ! disconnect;
 	{gs,connect,click,_Data,_Opts} ->
-	    Serial ! {connect};
+	    Serial ! connect;
 	{gs,open,click,_Data,_Opts} ->
 	    Serial ! {open,?DEVICE};
 	{gs,exit,click,_Data,_Args} ->

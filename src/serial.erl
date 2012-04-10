@@ -35,7 +35,11 @@
 priv_dir() ->
     case code:priv_dir(serial) of
 	{error, bad_name} ->
-	    "./priv";
+        filename:join([
+            filename:dirname(code:which(?MODULE)),
+            "..",
+            "priv"
+        ]);
 	D ->
 	    D
     end.
@@ -66,16 +70,16 @@ loop(Pid,Port) ->
 	{send, Bytes} ->
 	    send_serial(Port,[?SEND,Bytes]),
 	    serial:loop(Pid,Port);
-	{connect} ->
+	connect ->
 	    send_serial(Port,[?CONNECT]),
 	    serial:loop(Pid,Port);
-	{disconnect} ->
+	disconnect ->
 	    send_serial(Port,[?DISCONNECT]),
 	    serial:loop(Pid,Port);
 	{open, TTY} ->
 	    send_serial(Port,[?OPEN,TTY]),
 	    serial:loop(Pid,Port);
-	{close} ->
+	close ->
 	    send_serial(Port,[?CLOSE]),
 	    serial:loop(Pid,Port);
 	{speed, NewInSpeed, NewOutSpeed} ->
@@ -86,14 +90,17 @@ loop(Pid,Port) ->
 	    send_serial(Port,[?SPEED,integer_to_list(NewSpeed)," ",
 			      integer_to_list(NewSpeed),0]),
 	    serial:loop(Pid,Port);
-	{parity_odd} ->
+	parity_odd ->
 	    send_serial(Port,[?PARITY_ODD]),
 	    serial:loop(Pid,Port);
-	{parity_even} ->
+	parity_even ->
 	    send_serial(Port,[?PARITY_EVEN]),
 	    serial:loop(Pid,Port);
-	{break} ->
+	break ->
 	    send_serial(Port,[?BREAK]),
+	    serial:loop(Pid,Port);
+	flow ->
+	    send_serial(Port,[?FLOW]),
 	    serial:loop(Pid,Port);
 	stop ->
 	    stopped;

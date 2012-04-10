@@ -37,6 +37,7 @@
 -define(PARITY_ODD,6).
 -define(PARITY_EVEN,7).
 -define(BREAK,8).
+-define(FLOW,9).
 
 -endif.
 

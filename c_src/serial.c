@@ -77,6 +77,9 @@ THE SOFTWARE.
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <ctype.h>
+#include <unistd.h>
 
 #include "serial.h"
 
@@ -176,7 +179,7 @@ void set_raw_tty_mode(int fd)
 
   ttymodes.c_oflag &= ~OPOST;      /* disable output processing */
 
-  /* roland /
+  /* roland */
   ttymodes.c_cflag |= CLOCAL;
 
 
@@ -276,34 +279,6 @@ void tbh_write(int fd, unsigned char buf[], int buffsize)
 }
 
 /**********************************************************************
- * Name: tbh_read
- * Desc: Reads one message with two-byte-header, filling buffer.
- *       Returns the number of elements used in the buffer, or 0
- *       if the input file has been closed. 
- *
- */
-
-int tbh_read(int fd, unsigned char buf[], int buffsize)
-{
-  int remaining, msgsize;
-
-  if (read_at_least(fd,buf,TBHSIZE) != TBHSIZE) 
-    return 0;
-
-  remaining = get_tbh_size(buf);
-
-  Debug1("tbh_read: got message of size %d\r\n",remaining);
-
-  msgsize = read_at_least(fd, &buf[TBHSIZE],
-			  Min(remaining,(buffsize-TBHSIZE)));
-
-  if (msgsize == 0)
-    return 0;
-  else
-    return msgsize + TBHSIZE;
-}
-
-/**********************************************************************
  * Name: read_at_least(fd,buf,nr)
  * Desc: Read at least nr bytes and put them into buf. Return the number
  *       of bytes read, i.e. nr.
@@ -329,6 +304,34 @@ int read_at_least(int fd, unsigned char buf[], int nr)
     }
 
   return nr_read;
+}
+
+/**********************************************************************
+ * Name: tbh_read
+ * Desc: Reads one message with two-byte-header, filling buffer.
+ *       Returns the number of elements used in the buffer, or 0
+ *       if the input file has been closed. 
+ *
+ */
+
+int tbh_read(int fd, unsigned char buf[], int buffsize)
+{
+  int remaining, msgsize;
+
+  if (read_at_least(fd,buf,TBHSIZE) != TBHSIZE) 
+    return 0;
+
+  remaining = get_tbh_size(buf);
+
+  Debug1("tbh_read: got message of size %d\r\n",remaining);
+
+  msgsize = read_at_least(fd, &buf[TBHSIZE],
+			  Min(remaining,(buffsize-TBHSIZE)));
+
+  if (msgsize == 0)
+    return 0;
+  else
+    return msgsize + TBHSIZE;
 }
 
 /**********************************************************************
@@ -361,7 +364,7 @@ void write_to_tty(int ttyfd, int fillfd, int totalsize, int buffsize,
 
 int Debug_Enabled = FALSE;
 
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   int            ttyfd = -1;           /* terminal file descriptor */
   int            stdinfd;              /* user file descriptor     */
@@ -449,8 +452,6 @@ main(int argc, char *argv[])
 
   if (cbreak)
     {
-      sigset_t sig, savesig;
-
       /* Use non-cononical mode for input */
       set_raw_tty_mode(stdinfd);
       fprintf(stderr,"Entering non-canonical mode, exit with ---\n");
@@ -707,5 +708,5 @@ main(int argc, char *argv[])
   fprintf(stderr,"9600\t19200\t38400\n\t\t57600\t");
   fprintf(stderr,"115200\t230400\n");
 
-  exit(0);
+  return 0;
 }

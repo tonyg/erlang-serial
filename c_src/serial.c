@@ -151,41 +151,9 @@ void set_raw_tty_mode(int fd)
     }
 
   /* Configure for raw mode (see man termios) */
-  ttymodes.c_cc[VMIN] = 1;         /* at least one character */
-  ttymodes.c_cc[VTIME] = 0;        /* do not wait to fill buffer */
-
-  ttymodes.c_iflag &= ~(ICRNL |    /* disable CR-to-NL mapping */
-			INLCR |    /* disable NL-to-CR mapping */
-			IGNCR |    /* disable ignore CR */
-			ISTRIP |   /* disable stripping of eighth bit */
-			IXON |     /* disable output flow control */
-			BRKINT |   /* disable generate SIGINT on brk */
-			IGNPAR |
-			PARMRK |
-			IGNBRK |
-			INPCK);    /* disable input parity detection */
-
-  ttymodes.c_lflag &= ~(ICANON |   /* enable non-canonical mode */
-			ECHO |     /* disable character echo */
-			ECHOE |    /* disable visual erase */
-			ECHOK |    /* disable echo newline after kill */
-			ECHOKE |   /* disable visual kill with bs-sp-bs */
-			ECHONL |   /* disable echo nl when echo off */
-			ISIG | 	   /* disable tty-generated signals */
-			IEXTEN);   /* disable extended input processing */
-  
-  ttymodes.c_cflag |= CS8;         /* enable eight bit chars */
-  ttymodes.c_cflag &= ~PARENB;     /* disable input parity check */
-
-  ttymodes.c_oflag &= ~OPOST;      /* disable output processing */
-
-  /* roland */
-  ttymodes.c_cflag |= CLOCAL;
-
-
+  cfmakeraw(&ttymodes);
 
   /* Apply changes */
-
   if (tcsetattr(fd, TCSAFLUSH, &ttymodes) < 0)
     {
       perror("tcsetattr");

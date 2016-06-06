@@ -61,7 +61,7 @@ listen() ->
   end.
 ```
 
-See `src/terminal.erl` for more example code.
+See `examples/terminal.erl` for more example code (using the now-obsolete `gs` module).
 
 ## License
 

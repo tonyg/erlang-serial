@@ -1,3 +1,8 @@
+%% gs has been removed as of OTP 18.
+%% This code is therefore likely of historical interest only.
+%%  - tonyg 20160606
+%%---------------------------------------------------------------------------
+
 %% Copyright (c) 1996, 1999 Johan Bevemyr
 %% Copyright (c) 2007, 2009 Tony Garnock-Jones
 %% 

@@ -176,6 +176,7 @@ void set_raw_tty_mode(int fd)
   
   ttymodes.c_cflag |= CS8;         /* enable eight bit chars */
   ttymodes.c_cflag &= ~PARENB;     /* disable input parity check */
+  ttymodes.c_cflag |= CREAD;       /* enable receiver */
 
   ttymodes.c_oflag &= ~OPOST;      /* disable output processing */
 
